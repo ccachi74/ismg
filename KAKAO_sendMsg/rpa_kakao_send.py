@@ -19,14 +19,14 @@ def active_window(window_title):
 def search(roomName):
     # 검색버튼이 이미 눌러져 있는 경우 검색창 초기화
     try:
-        pyautogui.locateCenterOnScreen('./image/isearch.png')
-        i = pyautogui.locateCenterOnScreen('./image/search.png')
+        pyautogui.locateCenterOnScreen('KAKAO_sendMsg/image/isearch.png')
+        i = pyautogui.locateCenterOnScreen('KAKAO_sendMsg/image/search.png')
         pyautogui.click(i)
         pyautogui.click(i)
     
     # 검색버튼을 최초로 누르는 경우
     except:
-        i = pyautogui.locateCenterOnScreen('./image/search.png')
+        i = pyautogui.locateCenterOnScreen('KAKAO_sendMsg/image/search.png')
         pyautogui.click(i)
     
     # 대화방 검색
@@ -39,7 +39,7 @@ def search(roomName):
 # 메세지 보내기
 def kakao_msg(msg):
     try:
-        i = pyautogui.locateCenterOnScreen('./image/input.png')
+        i = pyautogui.locateCenterOnScreen('KAKAO_sendMsg/image/input.png')
         pyautogui.click(i)
         pyperclip.copy(msg)
         pyautogui.hotkey("ctrl", "v")
