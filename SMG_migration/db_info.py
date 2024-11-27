@@ -19,3 +19,6 @@ oci_info = {
     "JDBC_DRIVER" : 'oracle.jdbc.driver.OracleDriver',
     "JAR_FILE_PATH" : "ojdbc8.jar"
 }
+
+SITE_ID = 'mybot'
+SITE_PW = 'ismg12!@'

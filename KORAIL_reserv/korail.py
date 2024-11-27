@@ -9,19 +9,20 @@ from selenium.webdriver.support.ui import Select
 import time
 
 import gmail
-import KAKAO_sendMsg.kakao_send as kakao_send
+import setInfo
 
 # 상수선언
 DELAY = 3
 REPEAT_DELAY = 60
 
 # 노선 검색조건
-ST_STATION = '수원'     # 출발역
-EN_STATION = '용산'     # 도착역
+ST_STATION = '용산'     # 출발역
+EN_STATION = '수원'     # 도착역
 YEAR = '2024'           # 예약년도
 MONTH = '11'            # 예약월
-DAY = '28'              # 예약일
-HOUR = '0 (오전00)'     # 예약시간
+DAY = '27'              # 예약일
+HOUR = '18 (오후06)'     # 예약시간
+TR_LINE = 2             # 검색순번
 
 driver = webdriver.Chrome()
 
@@ -40,12 +41,12 @@ time.sleep(DELAY)
 xpath = '//*[@id="txtMember"]'
 id = driver.find_element(By.XPATH, xpath)
 id.clear()
-id.send_keys('0950070766')
+id.send_keys(setInfo.ID)
 
 xpath = '//*[@id="txtPwd"]'
 id = driver.find_element(By.XPATH, xpath)
 id.clear()
-id.send_keys('ifthen10!@')
+id.send_keys(setInfo.PW)
 
 xpath = '//*[@id="loginDisplay1"]/ul/li[3]/a/img'
 id = driver.find_element(By.XPATH, xpath)
@@ -97,24 +98,26 @@ while True:
     id.click()
     driver.implicitly_wait(3)
     
-    xpath = '//*[@id="tableResult"]/tbody/tr[1]/td[6]//img'
+    xpath = '//*[@id="tableResult"]/tbody/tr[{}]/td[6]//img'.format(TR_LINE)
     id = driver.find_element(By.XPATH, xpath).get_attribute('alt')
     
-    xpath = '//*[@id="tableResult"]/tbody/tr[1]/td[3]'
+    xpath = '//*[@id="tableResult"]/tbody/tr[{}]/td[3]'.format(TR_LINE)
     train_info = driver.find_element(By.XPATH, xpath).text
     
+    content = '''
+        출발역 : {}
+        도착역 : {}
+        예약일 : {}년 {}월 {}일
+        열차정보 : {}
+    '''.format(ST_STATION, EN_STATION, YEAR, MONTH, DAY, train_info.replace('\n', ' '))
+
     if id == '예약하기':
         title = print_now('예약가능 : %s')
-        content = '''
-            출발역 : {}
-            도착역 : {}
-            열차정보 : {}
-        '''.format(ST_STATION, EN_STATION, train_info.replace('\n', ' '))
         gmail.sendMail(title, content)
-        kakao_send(content)
         break
     else:
         title = print_now('좌석매진 : %s')
+        print(content)
 
     time.sleep(REPEAT_DELAY)
     

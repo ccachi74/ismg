@@ -15,8 +15,8 @@ import time
 WINDOW_NAME = '열기'
 DELAY_TIME = 3
 COMPANY = '(주)서울문화사'
-SITE_ID = 'mybot'
-SITE_PW = 'ismg12!@'
+SITE_ID = db_info.SITE_ID
+SITE_PW = db_info.SITE_PW
 
 # 초기값 설정
 SEQ_RANGE = (1, 10000000)
