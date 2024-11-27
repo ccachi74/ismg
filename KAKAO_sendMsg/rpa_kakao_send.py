@@ -11,6 +11,7 @@ def active_window(window_title):
     for window in auto.GetRootControl().GetChildren():
         if str(window.Name).find(window_title) > -1:
             window.SetActive()
+            print('윈도우찾기 성공')
             return
     raise
 
@@ -33,15 +34,20 @@ def search(roomName):
         pyperclip.copy(roomName)
         pyautogui.hotkey("ctrl", "v")
         pyautogui.press('enter')
+        print('대화방 검색 성공')
 
 # 메세지 보내기
 def kakao_msg(msg):
-    i = pyautogui.locateCenterOnScreen('./image/input.png')
-    pyautogui.click(i)
-    pyperclip.copy(msg)
-    pyautogui.hotkey("ctrl", "v")
-    pyautogui.press('enter')
-
+    try:
+        i = pyautogui.locateCenterOnScreen('./image/input.png')
+        pyautogui.click(i)
+        pyperclip.copy(msg)
+        pyautogui.hotkey("ctrl", "v")
+        pyautogui.press('enter')
+        print('메세지 발송 성공')
+    except:
+        print('메세지발송 실패')
+        
 ########################
 ########################
 
