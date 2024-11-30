@@ -52,10 +52,11 @@ def kakao_msg(msg):
 ########################
 
 if __name__ == '__main__':
-    ROOMNAME = '윤치선'
+    ROOMNAME = '윤지호'
     MSG = '메세지를 보냅니다.'
     
     active_window('카카오톡')
     search(ROOMNAME)
     active_window(ROOMNAME)
-    kakao_msg(MSG)
+    for _ in range(100):
+        kakao_msg(MSG)

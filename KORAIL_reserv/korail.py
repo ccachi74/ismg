@@ -23,6 +23,8 @@ MONTH = '12'            # 예약월
 DAY = '2'               # 예약일
 HOUR = '0 (오전00)'     # 예약시간
 TR_LINE = 1             # 검색순번
+# HOUR = '18 (오후06)'     # 예약시간
+# TR_LINE = 2             # 검색순번
 
 driver = webdriver.Chrome()
 
