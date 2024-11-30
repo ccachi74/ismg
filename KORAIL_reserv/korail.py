@@ -16,15 +16,20 @@ DELAY = 3
 REPEAT_DELAY = 60
 
 # 노선 검색조건
-ST_STATION = '수원'     # 출발역
-EN_STATION = '용산'     # 도착역
 YEAR = '2024'           # 예약년도
 MONTH = '12'            # 예약월
 DAY = '2'               # 예약일
-HOUR = '0 (오전00)'     # 예약시간
-TR_LINE = 1             # 검색순번
-# HOUR = '18 (오후06)'     # 예약시간
-# TR_LINE = 2             # 검색순번
+
+if input('출근(1), 퇴근(2) : ') == '1':
+    ST_STATION = '수원'     # 출발역
+    EN_STATION = '용산'     # 도착역
+    HOUR = '0 (오전00)'     # 예약시간
+    TR_LINE = 1             # 검색순번
+else:
+    ST_STATION = '용산'     # 출발역
+    EN_STATION = '수원'     # 도착역
+    HOUR = '18 (오후06)'    # 예약시간
+    TR_LINE = 2             # 검색순번
 
 driver = webdriver.Chrome()
 
