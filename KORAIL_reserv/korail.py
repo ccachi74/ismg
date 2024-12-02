@@ -104,7 +104,8 @@ while True:
     id = driver.find_element(By.XPATH, xpath)
     id.click()
     driver.implicitly_wait(3)
-    
+    time.sleep(DELAY)
+
     xpath = '//*[@id="tableResult"]/tbody/tr[{}]/td[6]//img'.format(TR_LINE)
     id = driver.find_element(By.XPATH, xpath).get_attribute('alt')
     

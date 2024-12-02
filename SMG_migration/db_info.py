@@ -14,7 +14,7 @@ postgres_jdbc_info = {
 }
 oci_info = {
     "DB_USER" : 'USR_ISMG',
-    "DB_PASSWORD" : 'Pwd#Ismg#2024#Dev',
+    "DB_PASSWORD" : 'Pwd#Ismg#2024',
     "DB_URL" : 'jdbc:oracle:thin:@193.123.239.240:11521/ISMGDB_DEV.ismgsbnpridev01.ismgvcnprd01.oraclevcn.com',
     "JDBC_DRIVER" : 'oracle.jdbc.driver.OracleDriver',
     "JAR_FILE_PATH" : "ojdbc8.jar"
