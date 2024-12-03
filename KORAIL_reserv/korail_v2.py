@@ -7,40 +7,45 @@ import time
 import gmail
 import setInfo
 import threading
+from datetime import datetime
 
 # 상수 선언
 DELAY = 3
 REPEAT_DELAY = 60
-
-# 검색 조건
-YEAR = '2024'  # 예약년도
-MONTH = '12'   # 예약월
-DAY = '3'      # 예약일
 
 # Tkinter GUI 앱 클래스
 class KorailApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Korail Reservation Checker")
-        self.root.geometry("800x650")
+        self.root.geometry("800x650+1000+0")
         self.driver = None  # Selenium 드라이버 초기화
 
         # 입력 영역
         input_frame = tk.Frame(self.root)
         input_frame.pack(pady=10)
 
+        # 오늘 날짜 가져오기
+        today = datetime.today()
+        self.YEAR = today.year
+        self.MONTH = today.month
+        self.DAY = today.day
+
         # Label과 Entry 위젯
         tk.Label(input_frame, text="Year:").grid(row=0, column=0, padx=5, pady=5)
         self.year_entry = tk.Entry(input_frame, width=10)
         self.year_entry.grid(row=0, column=1, padx=5, pady=5)
+        self.year_entry.insert(0, str(self.YEAR))  # 오늘 날짜의 년도 입력
 
         tk.Label(input_frame, text="Month:").grid(row=0, column=2, padx=5, pady=5)
         self.month_entry = tk.Entry(input_frame, width=10)
         self.month_entry.grid(row=0, column=3, padx=5, pady=5)
+        self.month_entry.insert(0, str(self.MONTH))  # 오늘 날짜의 월 입력
 
         tk.Label(input_frame, text="Day:").grid(row=0, column=4, padx=5, pady=5)
         self.day_entry = tk.Entry(input_frame, width=10)
         self.day_entry.grid(row=0, column=5, padx=5, pady=5)
+        self.day_entry.insert(0, str(self.DAY))  # 오늘 날짜의 일 입력
 
         # 출근/퇴근 라디오 버튼
         self.attendance_status = tk.StringVar(value="출근")  # 기본값은 "출근"
@@ -94,9 +99,16 @@ class KorailApp:
     def log(self, message):
         """텍스트 위젯에 로그 메시지 출력"""
         self.text_widget.config(state="normal")
-        self.text_widget.insert("end", message + "\n")
+        
+        if '예약가능' in message:
+            self.text_widget.insert("end", message + "\n", "green")
+        else:
+            self.text_widget.insert("end", message + "\n", "white")
+            
         self.text_widget.config(state="disabled")
         self.text_widget.see("end")
+        self.text_widget.tag_configure("green", foreground="green")  # 보라색 태그 설정
+        self.text_widget.tag_configure("white", foreground="white")  # 흰색 태그 설정
         self.root.update_idletasks()  # 화면 강제 갱신
 
     def print_now(self, param):
@@ -180,6 +192,7 @@ class KorailApp:
         finally:
             self.log("프로세스 종료")
             self.driver.quit()
+            self.driver = None
 
     def exit_application(self):
         """종료 버튼 클릭 시 실행"""
