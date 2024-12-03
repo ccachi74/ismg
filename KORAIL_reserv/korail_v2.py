@@ -64,6 +64,11 @@ class KorailApp:
         self.text_widget = tk.Text(self.root, state="disabled", bg="black", fg="white", font=("맑은 고딕", 10))
         self.text_widget.pack(fill="both", expand=True, padx=10, pady=10)
 
+        # 스크롤바 추가
+        self.scrollbar = tk.Scrollbar(self.text_widget, command=self.text_widget.yview)
+        self.text_widget.config(yscrollcommand=self.scrollbar.set)
+        self.scrollbar.pack(side="right", fill="y")
+        
         # 종료 버튼
         self.exit_button = tk.Button(self.root, text="종료", command=self.exit_application, font=("맑은 고딕", 10))
         self.exit_button.pack(pady=10)
