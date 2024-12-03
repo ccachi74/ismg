@@ -52,11 +52,11 @@ class KorailApp:
         submit_button.grid(row=1, column=4, columnspan=2, padx=10, pady=5)
 
         # 텍스트 출력 위젯
-        self.text_widget = tk.Text(self.root, state="disabled", bg="black", fg="white", font=("Consolas", 12))
+        self.text_widget = tk.Text(self.root, state="disabled", bg="black", fg="white", font=("맑은 고딕", 10))
         self.text_widget.pack(fill="both", expand=True, padx=10, pady=10)
 
         # 종료 버튼
-        self.exit_button = tk.Button(self.root, text="종료", command=self.exit_application, font=("Arial", 12))
+        self.exit_button = tk.Button(self.root, text="종료", command=self.exit_application, font=("맑은 고딕", 10))
         self.exit_button.pack(pady=10)
         
     def submit_date(self):
