@@ -1,5 +1,4 @@
 import tkinter as tk
-from tkinter.simpledialog import askstring
 from tkinter import messagebox
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -60,13 +59,6 @@ class KorailApp:
         self.exit_button = tk.Button(self.root, text="종료", command=self.exit_application, font=("Arial", 12))
         self.exit_button.pack(pady=10)
         
-        # 출퇴근 구분 입력
-        # self.input_param = askstring(title='출퇴근 구분', prompt='출근(1), 퇴근(2) : ')
-
-
-        # 예약 확인 프로세스 실행
-        # self.start_thread()
-
     def submit_date(self):
         """입력된 날짜와 출근/퇴근 상태를 처리"""
         self.YEAR = self.year_entry.get().strip()
