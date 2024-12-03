@@ -11,6 +11,8 @@ import time
 import gmail
 import setInfo
 
+from tkinter.simpledialog import askstring
+
 # 상수선언
 DELAY = 3
 REPEAT_DELAY = 60
@@ -18,9 +20,11 @@ REPEAT_DELAY = 60
 # 노선 검색조건
 YEAR = '2024'           # 예약년도
 MONTH = '12'            # 예약월
-DAY = '2'               # 예약일
+DAY = '3'               # 예약일
 
-if input('출근(1), 퇴근(2) : ') == '1':
+inputParam = askstring(title='출퇴근구분', prompt='출근(1), 퇴근(2) : ')
+
+if inputParam == '1':
     ST_STATION = '수원'     # 출발역
     EN_STATION = '용산'     # 도착역
     HOUR = '0 (오전00)'     # 예약시간
