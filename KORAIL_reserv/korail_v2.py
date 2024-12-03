@@ -4,20 +4,23 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 import time
+from datetime import datetime
 import gmail
 import setInfo
 import threading
-from datetime import datetime
-
-# 상수 선언
-DELAY = 3
-REPEAT_DELAY = 60
 
 # Tkinter GUI 앱 클래스
 class KorailApp:
-    def __init__(self, root):
+    def __init__(self, root, DELAY=3, REPEAT_DELAY=60):
         self.root = root
+        self.DELAY = DELAY
+        self.REPEAT_DELAY = REPEAT_DELAY
+        
         self.root.title("Korail Reservation Checker")
+        
+        icon32 = tk.PhotoImage(file='logo14.png')
+        self.root.iconphoto(False, icon32)
+        
         self.root.geometry("800x650+1000+5")
         self.driver = None  # Selenium 드라이버 초기화
 
@@ -111,12 +114,6 @@ class KorailApp:
         self.text_widget.tag_configure("white", foreground="white")  # 흰색 태그 설정
         self.root.update_idletasks()  # 화면 강제 갱신
 
-    def print_now(self, param):
-        """현재 시간을 포함한 메시지 포맷"""
-        lt = time.localtime(time.time())
-        td = time.strftime('%Y년 %m월 %d일 %H시 %M분 %S초', lt)
-        return param % td
-
     def start_thread(self):
         """Selenium 작업을 별도의 스레드에서 실행"""
         thread = threading.Thread(target=self.start_process)
@@ -133,14 +130,14 @@ class KorailApp:
             # 로그인 페이지 호출
             url = "https://www.letskorail.com/korail/com/login.do"
             self.driver.get(url)
-            time.sleep(DELAY)
+            time.sleep(self.DELAY)
 
             # 로그인 정보 입력
-            self.log(self.print_now("로그인 시도 : %s"))
+            self.log(f"로그인 : {datetime.today()}")
             self.driver.find_element(By.XPATH, '//*[@id="txtMember"]').send_keys(setInfo.ID)
             self.driver.find_element(By.XPATH, '//*[@id="txtPwd"]').send_keys(setInfo.PW)
             self.driver.find_element(By.XPATH, '//*[@id="loginDisplay1"]/ul/li[3]/a/img').click()
-            time.sleep(DELAY)
+            time.sleep(self.DELAY)
 
             # 검색 조건 입력
             self.driver.find_element(By.XPATH, '//*[@id="txtGoStart"]').clear()
@@ -148,7 +145,7 @@ class KorailApp:
             self.driver.find_element(By.XPATH, '//*[@id="txtGoEnd"]').clear()
             self.driver.find_element(By.XPATH, '//*[@id="txtGoEnd"]').send_keys(self.EN_STATION)
             self.driver.find_element(By.XPATH, '//*[@id="res_cont_tab01"]/form/div/fieldset/p/a/img').click()
-            time.sleep(DELAY)
+            time.sleep(self.DELAY)
 
             # 예약 날짜와 시간 설정
             Select(self.driver.find_element(By.XPATH, '//*[@id="s_year"]')).select_by_visible_text(self.YEAR)
@@ -161,7 +158,7 @@ class KorailApp:
                 if not self.driver:
                     break
                 self.driver.find_element(By.XPATH, '//*[@id="center"]/div[3]/p/a/img').click()
-                time.sleep(DELAY)
+                time.sleep(self.DELAY)
 
                 # 예약 상태 확인
                 status = self.driver.find_element(By.XPATH, f'//*[@id="tableResult"]/tbody/tr[{self.TR_LINE}]/td[6]//img').get_attribute('alt')
@@ -175,17 +172,17 @@ class KorailApp:
                 '''
 
                 if status == '예약하기':
-                    title = self.print_now("예약가능 : %s")
+                    title = f"예약가능 : {datetime.today()}"
                     self.log(title)
                     self.log(content)
                     gmail.sendMail(title, content)
                     break
                 else:
-                    title = self.print_now("좌석매진 : %s")
+                    title = f"좌석매진 : {datetime.today()}"
                     self.log(title)
                     self.log(content)
 
-                time.sleep(REPEAT_DELAY)
+                time.sleep(self.REPEAT_DELAY)
 
         except Exception as e:
             self.log(f"오류 발생: {e}")
