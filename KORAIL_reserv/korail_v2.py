@@ -125,6 +125,8 @@ class KorailApp:
         try:
             # Selenium 드라이버 설정
             self.driver = webdriver.Chrome()
+            self.driver.implicitly_wait(10)
+
             self.log("크롬 드라이버 시작...")
             
             # 로그인 페이지 호출
@@ -202,5 +204,5 @@ class KorailApp:
 # GUI 실행
 if __name__ == "__main__":
     root = tk.Tk()
-    app = KorailApp(root)
+    app = KorailApp(root, DELAY=0)
     root.mainloop()
