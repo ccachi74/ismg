@@ -18,7 +18,7 @@ class KorailApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Korail Reservation Checker")
-        self.root.geometry("800x650+1000+0")
+        self.root.geometry("800x650+1000+5")
         self.driver = None  # Selenium 드라이버 초기화
 
         # 입력 영역
@@ -107,7 +107,7 @@ class KorailApp:
             
         self.text_widget.config(state="disabled")
         self.text_widget.see("end")
-        self.text_widget.tag_configure("green", foreground="green")  # 보라색 태그 설정
+        self.text_widget.tag_configure("green", foreground="green")  # 녹색 태그 설정
         self.text_widget.tag_configure("white", foreground="white")  # 흰색 태그 설정
         self.root.update_idletasks()  # 화면 강제 갱신
 
