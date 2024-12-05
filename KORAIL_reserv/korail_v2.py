@@ -131,7 +131,7 @@ class KorailApp:
         try:
             # Selenium 드라이버 설정
             self.driver = webdriver.Chrome()
-            self.driver.implicitly_wait(10)
+            self.driver.implicitly_wait(60)
 
             self.log("크롬 드라이버 시작...")
             
@@ -151,7 +151,7 @@ class KorailApp:
             self.driver.find_element(By.XPATH, '//*[@id="txtGoEnd"]').clear()
             self.driver.find_element(By.XPATH, '//*[@id="txtGoEnd"]').send_keys(self.EN_STATION)
             self.driver.find_element(By.XPATH, '//*[@id="res_cont_tab01"]/form/div/fieldset/p/a/img').click()
-
+            
             # 예약 날짜와 시간 설정
             element = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="s_year"]')))
             Select(element).select_by_visible_text(self.YEAR)
