@@ -6,19 +6,21 @@ from selenium.webdriver.common.alert import Alert
 import uiautomation as auto
 
 import jaydebeapi
-import SMG_migration.db_info as db_info
-import SMG_migration.SMG_sql as SMG_sql
+import db_info as db_info
+import SMG_sql as SMG_sql
 
 import time
 
 # 상수설정
 WINDOW_NAME = '열기'
+DELAY_TIME = 3
 COMPANY = '(주)서울문화사'
 SITE_ID = db_info.SITE_ID
 SITE_PW = db_info.SITE_PW
 
 # 초기값 설정
-SEQ_RANGE = (1, 10000000)
+# SEQ_RANGE = (1, 10000000)
+SEQ_RANGE = tuple(map(int, input('Input SEQ_RANGE : ').split(',')))
 IN_PARAM = input("Upload(1) or Delete(2) : ")
 
 # APPR_FILE 테이블 데이터 읽어오기
@@ -120,6 +122,8 @@ def site_login(driver):
     url = "http://193.123.239.240:180/"
     driver.get(url)
 
+    time.sleep(DELAY_TIME)
+
     # 회사선택
     xpath = '//*[@id="login_intro_bg_image_container"]/div/div/form/div[1]/div/select'
     comp_field = driver.find_element(By.XPATH, xpath)
@@ -136,13 +140,15 @@ def site_login(driver):
     password_field.send_keys(SITE_PW)  # 여기에 비밀번호 입력
 
     # 로그인 버튼 클릭
-    xpath = '//*[@id="login_intro_bg_image_container"]/div/div/a'
+    xpath = '//*[@id="login_intro_bg_image_container"]/div/div/form/a'
     driver.find_element(By.XPATH, xpath).click()
+    time.sleep(DELAY_TIME)
 
     # 첨부파일 업로드 화면 호출
     url = 'http://193.123.239.240:180/gw-n/app/groupware/approval/migration/ApprovalMigAttachFileManagement.jsp'
     driver.get(url)
     driver.maximize_window()
+    time.sleep(DELAY_TIME)
 
 def site_upload(driver, docuList):
     # 업로드 하기
@@ -159,10 +165,12 @@ def site_upload(driver, docuList):
         # 검색버튼 클릭
         xpath = '//*[@id="CommonBtnSearch"]'
         driver.find_element(By.XPATH, xpath).click()
+        time.sleep(DELAY_TIME)
 
         # 문서 선택 및 클릭
         xpath = '//*[@id="ifrmGridDATACell.0.0.inner"]'
         driver.find_element(By.XPATH, xpath).click()
+        time.sleep(DELAY_TIME)
 
         # iframe 내부로 진입
         xpath = '//*[@id="smodalwinContents"]'
@@ -172,6 +180,7 @@ def site_upload(driver, docuList):
         # 파일업로드 버튼 클릭
         xpath = '//*[@id="filechooserContainer"]'
         driver.find_element(By.XPATH, xpath).click()
+        time.sleep(DELAY_TIME)
 
         # 업로드 파일 선택
         upload_file(docuNo[1])
@@ -179,6 +188,7 @@ def site_upload(driver, docuList):
         # 저장버튼 클릭
         xpath = '//*[@id="CommonBtnSave"]'
         driver.find_element(By.XPATH, xpath).click()
+        time.sleep(DELAY_TIME)
 
         # iframe 밖으로 다시 나오기
         driver.switch_to.default_content()
@@ -186,6 +196,8 @@ def site_upload(driver, docuList):
         end_time = time.time()
         execution_time = end_time - start_time
         print(f"수행 시간: {execution_time:.6f}초")
+
+    time.sleep(DELAY_TIME)
 
 # 업로드 파일 삭제
 def site_delete(driver, docuList):
@@ -202,10 +214,12 @@ def site_delete(driver, docuList):
         # 검색버튼 클릭
         xpath = '//*[@id="CommonBtnSearch"]'
         driver.find_element(By.XPATH, xpath).click()
+        time.sleep(DELAY_TIME)
 
         # 문서 선택 및 클릭
         xpath = '//*[@id="ifrmGridDATACell.0.0.inner"]'
         driver.find_element(By.XPATH, xpath).click()
+        time.sleep(DELAY_TIME)
 
         # iframe 내부로 진입
         xpath = '//*[@id="smodalwinContents"]'
@@ -218,6 +232,7 @@ def site_delete(driver, docuList):
 
         # 메세지박스 확인버튼 클릭
         Alert(driver).accept()
+        time.sleep(DELAY_TIME)
         
         # 플래그 업데이트
         update_data(docuNo[0])
@@ -225,6 +240,7 @@ def site_delete(driver, docuList):
         # 저장버튼 클릭
         xpath = '//*[@id="CommonBtnSave"]'
         driver.find_element(By.XPATH, xpath).click()
+        time.sleep(DELAY_TIME)
 
         # iframe 밖으로 다시 나오기
         driver.switch_to.default_content()
@@ -232,10 +248,11 @@ def site_delete(driver, docuList):
         end_time = time.time()
         execution_time = end_time - start_time
         print(f"수행 시간: {execution_time:.6f}초")
+
+    time.sleep(DELAY_TIME)
     
 def main():
     driver = webdriver.Chrome()
-    driver.implicitly_wait(60)
 
     site_login(driver)              # 사이트접속
     docuList = get_data()           # 첨부파일 목록 읽어오기
