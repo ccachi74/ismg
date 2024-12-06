@@ -22,7 +22,7 @@ class KorailApp:
         icon32 = tk.PhotoImage(file='logo14.png')
         self.root.iconphoto(False, icon32)
         
-        self.root.geometry("800x650+1000+5")
+        self.root.geometry("500x650+1400+5")
         self.driver = None  # Selenium 드라이버 초기화
 
         # 입력 영역

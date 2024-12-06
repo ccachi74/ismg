@@ -23,24 +23,29 @@ SEQ_RANGE = (1, 10000000)
 IN_PARAM = None  # 초기화
 
 # Tkinter GUI 설정
-class InputApp:
+class MigrationBot:
     def __init__(self, master):
         self.master = master
-        master.title("Input Parameters")
+        master.title("SMG Migration Bot")
         master.geometry("400x650+1400+5")
         
+        icon32 = tk.PhotoImage(file='logo14.png')
+        master.iconphoto(False, icon32)
+
         self.label1 = tk.Label(master, text="Input SEQ_RANGE (Start, End):")
         self.label1.pack()
 
         self.seq_range_entry = tk.Entry(master)
         self.seq_range_entry.pack()
 
-        self.label2 = tk.Label(master, text="Upload(1) or Delete(2):")
-        self.label2.pack()
-
-        self.in_param_entry = tk.Entry(master)
-        self.in_param_entry.pack()
-
+        # 라디오 버튼 추가
+        self.in_param_entry = tk.StringVar(value="1")  # 기본값 설정
+        self.upload_radio = tk.Radiobutton(master, text="Upload", variable=self.in_param_entry, value="1")
+        self.upload_radio.pack()
+        
+        self.delete_radio = tk.Radiobutton(master, text="Delete", variable=self.in_param_entry, value="2")
+        self.delete_radio.pack()
+        
         self.submit_button = tk.Button(master, text="Submit", command=self.submit)
         self.submit_button.pack()
 
@@ -59,9 +64,7 @@ class InputApp:
             SEQ_RANGE = tuple(map(int, self.seq_range_entry.get().split(',')))
             # IN_PARAM 입력 처리
             IN_PARAM = self.in_param_entry.get()
-            if IN_PARAM not in ['1', '2']:
-                raise ValueError("Invalid input for Upload/Delete. Please enter 1 or 2.")
-
+            
             self.start_selenium_process()  # Selenium 작업 시작
             
         except Exception as e:
@@ -72,8 +75,8 @@ class InputApp:
 
         """Selenium 작업을 시작하는 메서드"""
         driver = webdriver.Chrome()
-        site_login(driver, self)              # 사이트접속
-        docuList = get_data(self)           # 첨부파일 목록 읽어오기
+        site_login(driver, self)                # 사이트접속
+        docuList = get_data(self)               # 첨부파일 목록 읽어오기
 
         if IN_PARAM == '1':
             site_upload(driver, docuList, self)               # 첨부파일 저장
@@ -222,7 +225,7 @@ def site_login(driver, app):
     # driver.maximize_window()
     time.sleep(DELAY_TIME)
     
-    app.log("Data fetched successfully.")
+    app.log("Login Complete.")
 
 def site_upload(driver, docuList, app):
     # 업로드 하기
@@ -328,7 +331,7 @@ def site_delete(driver, docuList, app):
 def main():
     # Tkinter GUI 실행
     root = tk.Tk()
-    app = InputApp(root)
+    app = MigrationBot(root)
     root.mainloop()
     
 if __name__ == "__main__":
