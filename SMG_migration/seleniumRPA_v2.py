@@ -1,14 +1,13 @@
+import tkinter as tk
+from tkinter import messagebox
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.alert import Alert
-
 import uiautomation as auto
-
 import jaydebeapi
 import db_info as db_info
 import SMG_sql as SMG_sql
-
 import time
 
 # 상수설정
@@ -19,12 +18,85 @@ SITE_ID = db_info.SITE_ID
 SITE_PW = db_info.SITE_PW
 
 # 초기값 설정
-# SEQ_RANGE = (1, 10000000)
-SEQ_RANGE = tuple(map(int, input('Input SEQ_RANGE(Start, End) : ').split(',')))
-IN_PARAM = input("Upload(1) or Delete(2) : ")
+SEQ_RANGE = (1, 10000000)
 
+IN_PARAM = None  # 초기화
+
+# Tkinter GUI 설정
+class InputApp:
+    def __init__(self, master):
+        self.master = master
+        master.title("Input Parameters")
+        master.geometry("400x650+1400+5")
+        
+        self.label1 = tk.Label(master, text="Input SEQ_RANGE (Start, End):")
+        self.label1.pack()
+
+        self.seq_range_entry = tk.Entry(master)
+        self.seq_range_entry.pack()
+
+        self.label2 = tk.Label(master, text="Upload(1) or Delete(2):")
+        self.label2.pack()
+
+        self.in_param_entry = tk.Entry(master)
+        self.in_param_entry.pack()
+
+        self.submit_button = tk.Button(master, text="Submit", command=self.submit)
+        self.submit_button.pack()
+
+        # 텍스트 위젯 추가
+        self.text_widget = tk.Text(master, state="disabled", bg="black", fg="white", font=("맑은 고딕", 10))
+        self.text_widget.pack(fill="both", expand=True, padx=10, pady=10)
+
+        # 종료 버튼 추가
+        self.exit_button = tk.Button(master, text="Exit", command=self.exit_application)
+        self.exit_button.pack(pady=10)
+    
+    def submit(self):
+        global SEQ_RANGE, IN_PARAM
+        try:
+            # SEQ_RANGE 입력 처리
+            SEQ_RANGE = tuple(map(int, self.seq_range_entry.get().split(',')))
+            # IN_PARAM 입력 처리
+            IN_PARAM = self.in_param_entry.get()
+            if IN_PARAM not in ['1', '2']:
+                raise ValueError("Invalid input for Upload/Delete. Please enter 1 or 2.")
+
+            self.start_selenium_process()  # Selenium 작업 시작
+            
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+
+    def start_selenium_process(self):
+        self.log("Starting Selenium...")
+
+        """Selenium 작업을 시작하는 메서드"""
+        driver = webdriver.Chrome()
+        site_login(driver, self)              # 사이트접속
+        docuList = get_data(self)           # 첨부파일 목록 읽어오기
+
+        if IN_PARAM == '1':
+            site_upload(driver, docuList, self)               # 첨부파일 저장
+        else:
+            site_delete(driver, docuList, self)               # 첨부파일 삭제
+        
+        # 브라우저 종료
+        driver.quit()
+        
+    def exit_application(self):
+        """종료 버튼 클릭 시 실행"""
+        self.master.quit()  # GUI 종료
+        
+    def log(self, message):
+        """텍스트 위젯에 로그 메시지 출력"""
+        self.text_widget.config(state="normal")
+        self.text_widget.insert("end", message + "\n")
+        self.text_widget.config(state="disabled")
+        self.text_widget.see("end")
+        self.master.update_idletasks()  # GUI 업데이트
+                    
 # APPR_FILE 테이블 데이터 읽어오기
-def get_data():
+def get_data(app):
     DB_USER         = db_info.oci_info["DB_USER"]
     DB_PASSWORD     = db_info.oci_info["DB_PASSWORD"]
     DB_URL          = db_info.oci_info["DB_URL"]
@@ -56,19 +128,19 @@ def get_data():
         rows = cursor.fetchall()
             
     except Exception as error:
-        print("Error while inserting data:", error)
+        app.log("Error while inserting data:", error)
 
     finally:
         # Close the database connection
         if connection:
             cursor.close()
             connection.close()
-            print("DB connection closed.")
+            app.log("DB connection closed.")
 
     return rows
 
 # APPR_FILE 테이블 업로그플래그 지우기
-def update_data(docuNO):
+def update_data(docuNO, app):
     DB_USER         = db_info.oci_info["DB_USER"]
     DB_PASSWORD     = db_info.oci_info["DB_PASSWORD"]
     DB_URL          = db_info.oci_info["DB_URL"]
@@ -96,27 +168,27 @@ def update_data(docuNO):
         connection.commit()
             
     except Exception as error:
-        print("Error while updating data:", error)
+        app.log("Error while updating data:", error)
 
     finally:
         # Close the database connection
         if connection:
             cursor.close()
             connection.close()
-            print("DB connection closed.")
+            app.log("DB Update complete.")
 
-def upload_file(file_name):
+def upload_file(file_name, app):
     """파일 업로드를 처리합니다."""
     uploader = auto.WindowControl(searchDepth=2, Name=WINDOW_NAME)
 
     if not uploader.Exists(3, 1):
-        print('Can not find window')
+        app.log('Can not find window')
         return  # 예외 처리: 윈도우를 찾지 못한 경우
 
     uploader.EditControl(Name="파일 이름(N):").SendKeys(file_name)
     uploader.ButtonControl(Name="열기(O)").Click()
 
-def site_login(driver):
+def site_login(driver, app):
 
     # 메인페이지 호출
     url = "http://193.123.239.240:180/"
@@ -147,10 +219,12 @@ def site_login(driver):
     # 첨부파일 업로드 화면 호출
     url = 'http://193.123.239.240:180/gw-n/app/groupware/approval/migration/ApprovalMigAttachFileManagement.jsp'
     driver.get(url)
-    driver.maximize_window()
+    # driver.maximize_window()
     time.sleep(DELAY_TIME)
+    
+    app.log("Data fetched successfully.")
 
-def site_upload(driver, docuList):
+def site_upload(driver, docuList, app):
     # 업로드 하기
     for docuNo in docuList:
         start_time = time.time()
@@ -160,7 +234,7 @@ def site_upload(driver, docuList):
         docNo_field = driver.find_element(By.XPATH, xpath)
         docNo_field.clear()
         docNo_field.send_keys(docuNo[0])
-        print(f'문서번호 : {docuNo[0]}')
+        app.log(f'문서번호 : {docuNo[0]}')
 
         # 검색버튼 클릭
         xpath = '//*[@id="CommonBtnSearch"]'
@@ -183,7 +257,7 @@ def site_upload(driver, docuList):
         time.sleep(DELAY_TIME)
 
         # 업로드 파일 선택
-        upload_file(docuNo[1])
+        upload_file(docuNo[1], app)
 
         # 저장버튼 클릭
         xpath = '//*[@id="CommonBtnSave"]'
@@ -195,12 +269,12 @@ def site_upload(driver, docuList):
         
         end_time = time.time()
         execution_time = end_time - start_time
-        print(f"수행 시간: {execution_time:.6f}초")
+        app.log(f"수행시간 : {execution_time:.6f}초")
 
     time.sleep(DELAY_TIME)
 
 # 업로드 파일 삭제
-def site_delete(driver, docuList):
+def site_delete(driver, docuList, app):
     for docuNo in docuList:
         start_time = time.time()
         
@@ -209,7 +283,7 @@ def site_delete(driver, docuList):
         docNo_field = driver.find_element(By.XPATH, xpath)
         docNo_field.clear()
         docNo_field.send_keys(docuNo[0])
-        print(f'문서번호 : {docuNo[0]}')
+        app.log(f'문서번호 : {docuNo[0]}')
 
         # 검색버튼 클릭
         xpath = '//*[@id="CommonBtnSearch"]'
@@ -235,7 +309,7 @@ def site_delete(driver, docuList):
         time.sleep(DELAY_TIME)
         
         # 플래그 업데이트
-        update_data(docuNo[0])
+        update_data(docuNo[0], app)
         
         # 저장버튼 클릭
         xpath = '//*[@id="CommonBtnSave"]'
@@ -247,23 +321,15 @@ def site_delete(driver, docuList):
         
         end_time = time.time()
         execution_time = end_time - start_time
-        print(f"수행 시간: {execution_time:.6f}초")
+        app.log(f"수행시간 : {execution_time:.6f}초")
 
     time.sleep(DELAY_TIME)
     
 def main():
-    driver = webdriver.Chrome()
-
-    site_login(driver)              # 사이트접속
-    docuList = get_data()           # 첨부파일 목록 읽어오기
-
-    if IN_PARAM == '1':
-        site_upload(driver, docuList)               # 첨부파일 저장
-    else:
-        site_delete(driver, docuList)               # 첨부파일 삭제
-    
-    # 브라우저 종료
-    driver.quit()
+    # Tkinter GUI 실행
+    root = tk.Tk()
+    app = InputApp(root)
+    root.mainloop()
     
 if __name__ == "__main__":
     main()
