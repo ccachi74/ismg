@@ -122,7 +122,7 @@ def main():
                 json_data.get('type'),
                 json_data.get('formCode'),
                 json_data.get('formName'),
-                json_data.get('docuNo'),
+                json_data.get('docuNo') + '/' + str(unix2date(json_data.get('draftDay'))),
                 json_data.get('drafterNo'),
                 json_data.get('drafter'),
                 json_data.get('drafterGroupNo'),
@@ -142,7 +142,7 @@ def main():
                 insert_query = SMG_sql.migration_insert['appr_line']
                 
                 cursor.execute(insert_query, (
-                    json_data.get('docuNo'),
+                json_data.get('docuNo') + '/' + str(unix2date(json_data.get('draftDay'))),
                     line.get('userNo'),
                     line.get('userName'),
                     line.get('groupNo'),
@@ -163,7 +163,7 @@ def main():
                 insert_query = SMG_sql.migration_insert['appr_refer']
 
                 cursor.execute(insert_query, (
-                    json_data.get('docuNo'),
+                json_data.get('docuNo') + '/' + str(unix2date(json_data.get('draftDay'))),
                     refer.get('userNo'),
                     refer.get('userName'),
                     refer.get('groupNo'),
@@ -177,7 +177,7 @@ def main():
                 insert_query = SMG_sql.migration_insert['appr_view']
 
                 cursor.execute(insert_query, (
-                    json_data.get('docuNo'),
+                json_data.get('docuNo') + '/' + str(unix2date(json_data.get('draftDay'))),
                     view.get('userNo'),
                     view.get('userName'),
                     view.get('groupNo'),
@@ -192,7 +192,7 @@ def main():
                 insert_query = SMG_sql.migration_insert['appr_file']
                 
                 cursor.execute(insert_query, (
-                    json_data.get('docuNo'),
+                json_data.get('docuNo') + '/' + str(unix2date(json_data.get('draftDay'))),
                     file,
                     str(os.path.join(os.path.dirname(file_path), file)).replace('/', '\\'),
                     seq
