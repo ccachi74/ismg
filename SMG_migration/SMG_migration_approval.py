@@ -42,6 +42,8 @@ def find_files(directory, extention):
                 # 파일의 전체 경로를 저장
                 result_files.append(os.path.join(root, file))
     
+    print(f"{extention} : {len(result_files)}")
+    
     return result_files
 
 def extract_filename_from_path(file_path):
@@ -51,11 +53,17 @@ def extract_filename_from_path(file_path):
 # Main Process
 def main():
     seq = 0
-    directory = select_folder()
+    
+    directory = select_folder()                                 # 작업대상폴더 선택
+    sel_db = input("Select DBMS(1: OCI, 2: postgres) : ")       # Database 선택
+    truncate_flag = input("Truncate Table (y or n) ? ")         # DB Truncate 설정    
+    seq = int(input("Start with File Seq No. : "))              # 일련번호 초기값 설정
+    
     mht_file_list = find_files(directory, '.mht')
     json_file_list = find_files(directory, '.json')
 
-    sel_db = input("Select DBMS(1: OCI, 2: postgres) : ")
+    counter = 0
+    total_cnt = len(json_file_list)
     
     # Database connection details
     if  sel_db == "1":
@@ -90,14 +98,11 @@ def main():
         cursor = connection.cursor()
         
         # 테이블 초기화
-        if input("Truncate Table (y or n) ? ") == "y":
+        if truncate_flag == "y":
             for trunc_query in SMG_sql.migration_truncate.values():
                 cursor.execute(trunc_query)
             
             connection.commit()
-
-        # 일련번호 초기값 설정
-        seq = int(input("Start with File Seq No. : "))
         
         # Read CLOB data from the file
         for file_path, json_file_path in zip(mht_file_list, json_file_list):
@@ -199,8 +204,9 @@ def main():
                     ))
                 
                 connection.commit()
-
-            print("Data inserted successfully.")
+                
+            counter += 1
+            print(f"Data inserted successfully. ({counter} / {total_cnt})")
 
     except Exception as error:
         print("Error while inserting data:", error)
