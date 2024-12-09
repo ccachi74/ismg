@@ -52,7 +52,7 @@ def extract_filename_from_path(file_path):
 
 # Main Process
 def main():
-    seq = 0
+    seq = 1
     
     directory = select_folder()                                 # 작업대상폴더 선택
     sel_db = input("Select DBMS(1: OCI, 2: postgres) : ")       # Database 선택
@@ -193,7 +193,6 @@ def main():
 
             # Insert data into table (첨부파일정보)
             for file in json_data.get('files'):
-                seq = seq + 1
                 insert_query = SMG_sql.migration_insert['appr_file']
                 
                 cursor.execute(insert_query, (
@@ -204,6 +203,7 @@ def main():
                     ))
                 
                 connection.commit()
+                seq += 1
                 
             counter += 1
             print(f"Data inserted successfully. ({counter} / {total_cnt})")
