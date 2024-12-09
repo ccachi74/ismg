@@ -65,7 +65,8 @@ migration_postgres_create = {
                 "FILENAME" VARCHAR NULL,
                 "PATH" VARCHAR NULL,
                 "FLAG" VARCHAR NULL,
-                "SEQ" INT4 NULL
+                "SEQ" INT4 NULL,
+                "FILE_CHECK" CHAR(1) NULL
             )
         '''
 }
@@ -137,7 +138,8 @@ migration_create = {
                 "FILENAME" VARCHAR2(4000) NULL,
                 "PATH" VARCHAR2(4000) NULL,
                 "FLAG" VARCHAR2(100) NULL,
-                "SEQ" INTEGER NULL
+                "SEQ" INTEGER NULL,
+                "FILE_CHECK" CHAR(1) NULL
             )
         '''
 }
@@ -190,8 +192,8 @@ migration_insert = {
         ''',
     "appr_file" : 
         '''
-            INSERT INTO "USR_ISMG"."APPR_FILE" ("DOCUNO", "FILENAME", "PATH", "SEQ") 
-            VALUES (?, ?, ?, ?)
+            INSERT INTO "USR_ISMG"."APPR_FILE" ("DOCUNO", "FILENAME", "PATH", "SEQ", "FILE_CHECK") 
+            VALUES (?, ?, ?, ?, ?)
         '''
 }
 

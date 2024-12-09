@@ -50,6 +50,13 @@ def extract_filename_from_path(file_path):
     # os.path.basename() 함수를 사용하여 파일명만 추출
     return os.path.basename(file_path)
 
+def check_file_exists(file_path):
+    """주어진 파일 경로가 존재하는지 확인하는 함수"""
+    if not os.path.isfile(file_path):
+        print(f"파일이 존재하지 않습니다: {file_path}")
+        return "N"
+    return "Y"
+
 # Main Process
 def main():
     seq = 1
@@ -127,7 +134,7 @@ def main():
                 json_data.get('type'),
                 json_data.get('formCode'),
                 json_data.get('formName'),
-                json_data.get('docuNo') + '/' + str(unix2date(json_data.get('draftDay'))),
+                json_data.get('docuNo') + '/' + file_name,
                 json_data.get('drafterNo'),
                 json_data.get('drafter'),
                 json_data.get('drafterGroupNo'),
@@ -147,7 +154,7 @@ def main():
                 insert_query = SMG_sql.migration_insert['appr_line']
                 
                 cursor.execute(insert_query, (
-                json_data.get('docuNo') + '/' + str(unix2date(json_data.get('draftDay'))),
+                    json_data.get('docuNo') + '/' + file_name,
                     line.get('userNo'),
                     line.get('userName'),
                     line.get('groupNo'),
@@ -168,7 +175,7 @@ def main():
                 insert_query = SMG_sql.migration_insert['appr_refer']
 
                 cursor.execute(insert_query, (
-                json_data.get('docuNo') + '/' + str(unix2date(json_data.get('draftDay'))),
+                    json_data.get('docuNo') + '/' + file_name,
                     refer.get('userNo'),
                     refer.get('userName'),
                     refer.get('groupNo'),
@@ -182,7 +189,7 @@ def main():
                 insert_query = SMG_sql.migration_insert['appr_view']
 
                 cursor.execute(insert_query, (
-                json_data.get('docuNo') + '/' + str(unix2date(json_data.get('draftDay'))),
+                    json_data.get('docuNo') + '/' + file_name,
                     view.get('userNo'),
                     view.get('userName'),
                     view.get('groupNo'),
@@ -194,12 +201,15 @@ def main():
             # Insert data into table (첨부파일정보)
             for file in json_data.get('files'):
                 insert_query = SMG_sql.migration_insert['appr_file']
+                path = str(os.path.join(os.path.dirname(file_path), file)).replace('/', '\\')
                 
+                # if check_file_exists(path):
                 cursor.execute(insert_query, (
-                json_data.get('docuNo') + '/' + str(unix2date(json_data.get('draftDay'))),
+                    json_data.get('docuNo') + '/' + file_name,
                     file,
-                    str(os.path.join(os.path.dirname(file_path), file)).replace('/', '\\'),
-                    seq
+                    path,
+                    seq,
+                    check_file_exists(path)
                     ))
                 
                 connection.commit()
