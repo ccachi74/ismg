@@ -233,4 +233,5 @@ def main():
             
 if __name__ == "__main__":
     main()
+    input('아무 키나 누르세요...')
     
