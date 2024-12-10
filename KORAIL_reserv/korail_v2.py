@@ -182,7 +182,6 @@ class KorailApp:
                     self.log(title)
                     self.log(content)
                     gmail.sendMail(title, content)
-                    break
                 else:
                     title = f"좌석매진 : {datetime.today()}"
                     self.log(title)
