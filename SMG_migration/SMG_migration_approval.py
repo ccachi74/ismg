@@ -32,19 +32,24 @@ def select_folder():
         print("폴더가 선택되지 않았습니다.")
     return folder_path
 
-def find_files(directory, extention):
-    result_files = []
+def find_files(directory, extention1, extention2):
+    result_files_1 = []
+    result_files_2 = []
     
     # 디렉토리와 하위 디렉토리 모두 검색
     for root, _, files in os.walk(directory):
         for file in files:
-            if file.lower().endswith(extention):
+            if file.lower().endswith(extention1):
                 # 파일의 전체 경로를 저장
-                result_files.append(os.path.join(root, file))
+                result_files_1.append(os.path.join(root, file))
+            if file.lower().endswith(extention2):
+                # 파일의 전체 경로를 저장
+                result_files_2.append(os.path.join(root, file))
     
-    print(f"{extention} : {len(result_files)}")
+    print(f"{extention1} : {len(result_files_1)}")
+    print(f"{extention2} : {len(result_files_2)}")
     
-    return result_files
+    return result_files_1, result_files_2
 
 def extract_filename_from_path(file_path):
     # os.path.basename() 함수를 사용하여 파일명만 추출
@@ -59,15 +64,12 @@ def check_file_exists(file_path):
 
 # Main Process
 def main():
-    seq = 1
-    
     directory = select_folder()                                 # 작업대상폴더 선택
     sel_db = input("Select DBMS(1: OCI, 2: postgres) : ")       # Database 선택
     truncate_flag = input("Truncate Table (y or n) ? ")         # DB Truncate 설정    
     seq = int(input("Start with File Seq No. : "))              # 일련번호 초기값 설정
     
-    mht_file_list = find_files(directory, '.mht')
-    json_file_list = find_files(directory, '.json')
+    mht_file_list, json_file_list = find_files(directory, '.mht', '.json')
 
     counter = 0
     total_cnt = len(json_file_list)

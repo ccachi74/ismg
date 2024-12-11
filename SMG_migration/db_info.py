@@ -1,5 +1,5 @@
 postgres_info = {
-    "host" : "192.168.0.12",
+    "host" : "172.25.152.41",
     "database" : "postgres",
     "user" : "postgres",
     "password" : "ifthen10",
@@ -8,7 +8,7 @@ postgres_info = {
 postgres_jdbc_info = {
     "DB_USER" : 'postgres',
     "DB_PASSWORD" : 'ifthen10',
-    "DB_URL" : 'jdbc:postgresql://192.168.0.12:15432/postgres',
+    "DB_URL" : 'jdbc:postgresql://172.25.152.41:15432/postgres',
     "JDBC_DRIVER" : 'org.postgresql.Driver',
     "JAR_FILE_PATH" : "postgresql-42.7.4.jar"
 }
