@@ -194,7 +194,8 @@ def upload_file(file_name, app):
 def site_login(driver, app):
 
     # 메인페이지 호출
-    url = "http://193.123.239.240:180/"
+    # url = "http://193.123.239.240:180/"
+    url = "https://gw.mlounge.co.kr/"
     driver.get(url)
 
     time.sleep(DELAY_TIME)
@@ -220,7 +221,8 @@ def site_login(driver, app):
     time.sleep(DELAY_TIME)
 
     # 첨부파일 업로드 화면 호출
-    url = 'http://193.123.239.240:180/gw-n/app/groupware/approval/migration/ApprovalMigAttachFileManagement.jsp'
+    # url = 'http://193.123.239.240:180/gw-n/app/groupware/approval/migration/ApprovalMigAttachFileManagement.jsp'
+    url = 'https://gw.mlounge.co.kr/gw-n/app/groupware/approval/migration/ApprovalMigAttachFileManagement.jsp'
     driver.get(url)
     # driver.maximize_window()
     time.sleep(DELAY_TIME)

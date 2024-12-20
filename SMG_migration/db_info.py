@@ -12,13 +12,23 @@ postgres_jdbc_info = {
     "JDBC_DRIVER" : 'org.postgresql.Driver',
     "JAR_FILE_PATH" : "postgresql-42.7.4.jar"
 }
+
+# OCI 운영
 oci_info = {
     "DB_USER" : 'USR_ISMG',
-    "DB_PASSWORD" : 'Pwd#Ismg#2024',
-    "DB_URL" : 'jdbc:oracle:thin:@193.123.239.240:11521/ISMGDB_DEV.ismgsbnpridev01.ismgvcnprd01.oraclevcn.com',
+    "DB_PASSWORD" : 'Pwd#Ismg#2024#Pr',
+    "DB_URL" : 'jdbc:oracle:thin:@193.123.239.240:21521/ISMGDB.ismgsbnpriprd02.ismgvcnprd01.oraclevcn.com',
     "JDBC_DRIVER" : 'oracle.jdbc.driver.OracleDriver',
     "JAR_FILE_PATH" : "ojdbc8.jar"
 }
+# OCI 개발
+# oci_info = {
+#     "DB_USER" : 'USR_ISMG',
+#     "DB_PASSWORD" : 'Pwd#Ismg#2024',
+#     "DB_URL" : 'jdbc:oracle:thin:@193.123.239.240:11521/ISMGDB_DEV.ismgsbnpridev01.ismgvcnprd01.oraclevcn.com',
+#     "JDBC_DRIVER" : 'oracle.jdbc.driver.OracleDriver',
+#     "JAR_FILE_PATH" : "ojdbc8.jar"
+# }
 
 SITE_ID = 'mybot'
 SITE_PW = 'ismg12!@'
