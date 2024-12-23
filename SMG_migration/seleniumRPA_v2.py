@@ -142,7 +142,7 @@ def get_data(app):
 
     return rows
 
-# APPR_FILE 테이블 업로그플래그 지우기
+# APPR_FILE 테이블 업로드 플래그 지우기
 def update_data(docuNO, app):
     DB_USER         = db_info.oci_info["DB_USER"]
     DB_PASSWORD     = db_info.oci_info["DB_PASSWORD"]

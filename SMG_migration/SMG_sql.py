@@ -208,7 +208,7 @@ read_data = {
         '''
             SELECT "DOCUNO", "PATH", "FLAG", "SEQ" FROM "USR_ISMG"."APPR_FILE" 
             WHERE "FLAG" = 'success'
-            AND FILE_CHECK = 'N'
+            AND FILE_CHECK = 'Y'
             AND SEQ BETWEEN ? AND ?
         '''
 }
