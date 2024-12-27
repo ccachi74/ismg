@@ -202,6 +202,7 @@ read_data = {
         '''
             SELECT "DOCUNO", "PATH", "FLAG", "SEQ" FROM "USR_ISMG"."APPR_FILE" 
             WHERE "FLAG" IS NULL
+            AND FILE_CHECK = 'Y'
             AND SEQ BETWEEN ? AND ?
         ''',
     "appr_file_delete" : 

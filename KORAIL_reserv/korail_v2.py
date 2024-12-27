@@ -8,7 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 from datetime import datetime
 import gmail
-import setInfo
+import setInfo          # ID, PW, GMAIL_ACCOUNT, GMAIL_PASSWORD 설정
 import threading
 
 # Tkinter GUI 앱 클래스
