@@ -235,7 +235,10 @@ def site_upload(driver, docuList, app):
     # 업로드 하기
     for counter, docuNo in enumerate(docuList):
         tm = time.localtime()
-        app.log(f'현재시간 : {tm.tm_year}.{tm.tm_mon}.{tm.tm_mday} {tm.tm_hour}:{tm.tm_min}:{tm.tm_sec}')
+        app.log(f'현재시간 : {time.strftime(('%Y-%m-%d %I:%M:%S %p', tm))}')
+        app.log(f'문서번호 : {docuNo[0]}')
+        app.log(f"처리현황 : {counter+1} / {len(docuList)}")
+        app.log(f"파일용량 : {docuNo[4]:,} B")
         
         start_time = time.time()
         
@@ -244,7 +247,6 @@ def site_upload(driver, docuList, app):
         docNo_field = driver.find_element(By.XPATH, xpath)
         docNo_field.clear()
         docNo_field.send_keys(docuNo[0])
-        app.log(f'문서번호 : {docuNo[0]}')
 
         # 검색버튼 클릭
         xpath = '//*[@id="CommonBtnSearch"]'
@@ -274,15 +276,9 @@ def site_upload(driver, docuList, app):
         driver.find_element(By.XPATH, xpath).click()
         
         # 첨부파일 용량에 따라 대기시간 조정
-        if docuNo[4] < 15000000:
-            time.sleep(DELAY_TIME*2)
-        else:
-            tm = int((docuNo[4] + 15000000) / 15000000)
-            time.sleep(DELAY_TIME*2+tm)
-            
-        app.log(f"파일용량 : {docuNo[4]} Byte")
-        app.log(f"처리현황 : {counter+1} / {len(docuList)}")
-
+        tm = int(docuNo[4] / 3000000)
+        time.sleep(DELAY_TIME*2+tm)
+        
         # iframe 밖으로 다시 나오기
         driver.switch_to.default_content()
                 
