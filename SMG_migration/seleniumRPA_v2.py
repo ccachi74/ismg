@@ -75,6 +75,8 @@ class MigrationBot:
 
         """Selenium 작업을 시작하는 메서드"""
         driver = webdriver.Chrome()
+        driver.implicitly_wait(60)
+        
         site_login(driver, self)                # 사이트접속
         docuList = get_data(self)               # 첨부파일 목록 읽어오기
 
@@ -231,7 +233,10 @@ def site_login(driver, app):
 
 def site_upload(driver, docuList, app):
     # 업로드 하기
-    for docuNo in docuList:
+    for counter, docuNo in enumerate(docuList):
+        tm = time.localtime()
+        app.log(f'현재시간 : {tm.tm_year}.{tm.tm_mon}.{tm.tm_mday} {tm.tm_hour}:{tm.tm_min}:{tm.tm_sec}')
+        
         start_time = time.time()
         
         # 문서번호 선택 및 입력
@@ -267,11 +272,20 @@ def site_upload(driver, docuList, app):
         # 저장버튼 클릭
         xpath = '//*[@id="CommonBtnSave"]'
         driver.find_element(By.XPATH, xpath).click()
-        time.sleep(DELAY_TIME)
+        
+        # 첨부파일 용량에 따라 대기시간 조정
+        if docuNo[4] < 15000000:
+            time.sleep(DELAY_TIME*2)
+        else:
+            tm = int((docuNo[4] + 15000000) / 15000000)
+            time.sleep(DELAY_TIME*2+tm)
+            
+        app.log(f"파일용량 : {docuNo[4]} Byte")
+        app.log(f"처리현황 : {counter+1} / {len(docuList)}")
 
         # iframe 밖으로 다시 나오기
         driver.switch_to.default_content()
-        
+                
         end_time = time.time()
         execution_time = end_time - start_time
         app.log(f"수행시간 : {execution_time:.6f}초")

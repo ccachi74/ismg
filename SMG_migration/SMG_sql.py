@@ -66,7 +66,8 @@ migration_postgres_create = {
                 "PATH" VARCHAR NULL,
                 "FLAG" VARCHAR NULL,
                 "SEQ" INT4 NULL,
-                "FILE_CHECK" CHAR(1) NULL
+                "FILE_CHECK" CHAR(1) NULL,
+                "FILE_SIZE" INT4 NULL
             )
         '''
 }
@@ -139,7 +140,8 @@ migration_create = {
                 "PATH" VARCHAR2(4000) NULL,
                 "FLAG" VARCHAR2(100) NULL,
                 "SEQ" INTEGER NULL,
-                "FILE_CHECK" CHAR(1) NULL
+                "FILE_CHECK" CHAR(1) NULL,
+                "FILE_SIZE" INTEGER NULL
             )
         '''
 }
@@ -192,15 +194,20 @@ migration_insert = {
         ''',
     "appr_file" : 
         '''
-            INSERT INTO "USR_ISMG"."APPR_FILE" ("DOCUNO", "FILENAME", "PATH", "SEQ", "FILE_CHECK") 
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO "USR_ISMG"."APPR_FILE" ("DOCUNO", "FILENAME", "PATH", "SEQ", "FILE_CHECK", "FILE_SIZE") 
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''',
+    "appr_file_bak" : 
+        '''
+            INSERT INTO "USR_ISMG"."APPR_FILE_BAK" ("DOCUNO", "FILENAME", "PATH", "SEQ", "FILE_CHECK", "FILE_SIZE") 
+            VALUES (?, ?, ?, ?, ?, ?)
         '''
 }
 
 read_data = {
     "appr_file" : 
         '''
-            SELECT "DOCUNO", "PATH", "FLAG", "SEQ" FROM "USR_ISMG"."APPR_FILE" 
+            SELECT "DOCUNO", "PATH", "FLAG", "SEQ", "FILE_SIZE" FROM "USR_ISMG"."APPR_FILE" 
             WHERE "FLAG" IS NULL
             AND FILE_CHECK = 'Y'
             AND SEQ BETWEEN ? AND ?
@@ -217,6 +224,11 @@ read_data = {
 update_data = {
     "appr_file" : 
         '''
-            UPDATE "USR_ISMG"."APPR_FILE" SET FLAG='' WHERE "DOCUNO" = ?
+            UPDATE "USR_ISMG"."APPR_FILE" SET FLAG = '' WHERE "DOCUNO" = ?
+        ''',
+    "appr_file_size" : 
+        '''
+            UPDATE "USR_ISMG"."APPR_FILE" SET "FILE_SIZE" = ? WHERE "PATH" = ?
         '''
 }
+
