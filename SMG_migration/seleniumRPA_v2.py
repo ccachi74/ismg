@@ -235,7 +235,7 @@ def site_upload(driver, docuList, app):
     # 업로드 하기
     for counter, docuNo in enumerate(docuList):
         tm = time.localtime()
-        app.log(f'현재시간 : {time.strftime(('%Y-%m-%d %I:%M:%S %p', tm))}')
+        app.log(f'현재시간 : {time.strftime('%Y-%m-%d %I:%M:%S %p', tm)}')
         app.log(f'문서번호 : {docuNo[0]}')
         app.log(f"처리현황 : {counter+1} / {len(docuList)}")
         app.log(f"파일용량 : {docuNo[4]:,} B")
