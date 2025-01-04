@@ -234,57 +234,60 @@ def site_login(driver, app):
 def site_upload(driver, docuList, app):
     # 업로드 하기
     for counter, docuNo in enumerate(docuList):
-        tm = time.localtime()
-        app.log(f'현재시간 : {time.strftime('%Y-%m-%d %I:%M:%S %p', tm)}')
-        app.log(f'문서번호 : {docuNo[0]}')
-        app.log(f"처리현황 : {counter+1} / {len(docuList)}")
-        app.log(f"파일용량 : {docuNo[4]:,} B")
-        
-        start_time = time.time()
-        
-        # 문서번호 선택 및 입력
-        xpath = '/html/body/form[2]/div[1]/table/tbody/tr/td/table/tbody/tr[1]/td[2]/input'
-        docNo_field = driver.find_element(By.XPATH, xpath)
-        docNo_field.clear()
-        docNo_field.send_keys(docuNo[0])
+        try:
+            tm = time.localtime()
+            app.log(f'현재시간 : {time.strftime('%Y-%m-%d %I:%M:%S %p', tm)}')
+            app.log(f'문서번호 : {docuNo[0]}')
+            app.log(f"처리현황 : {counter+1} / {len(docuList)}")
+            app.log(f"파일용량 : {docuNo[4]:,} B")
+            
+            start_time = time.time()
+            
+            # 문서번호 선택 및 입력
+            xpath = '/html/body/form[2]/div[1]/table/tbody/tr/td/table/tbody/tr[1]/td[2]/input'
+            docNo_field = driver.find_element(By.XPATH, xpath)
+            docNo_field.clear()
+            docNo_field.send_keys(docuNo[0])
 
-        # 검색버튼 클릭
-        xpath = '//*[@id="CommonBtnSearch"]'
-        driver.find_element(By.XPATH, xpath).click()
-        time.sleep(DELAY_TIME)
+            # 검색버튼 클릭
+            xpath = '//*[@id="CommonBtnSearch"]'
+            driver.find_element(By.XPATH, xpath).click()
+            time.sleep(DELAY_TIME)
 
-        # 문서 선택 및 클릭
-        xpath = '//*[@id="ifrmGridDATACell.0.0.inner"]'
-        driver.find_element(By.XPATH, xpath).click()
-        time.sleep(DELAY_TIME)
+            # 문서 선택 및 클릭
+            xpath = '//*[@id="ifrmGridDATACell.0.0.inner"]'
+            driver.find_element(By.XPATH, xpath).click()
+            time.sleep(DELAY_TIME)
 
-        # iframe 내부로 진입
-        xpath = '//*[@id="smodalwinContents"]'
-        iframe = driver.find_element(By.XPATH, xpath)
-        driver.switch_to.frame(iframe)
+            # iframe 내부로 진입
+            xpath = '//*[@id="smodalwinContents"]'
+            iframe = driver.find_element(By.XPATH, xpath)
+            driver.switch_to.frame(iframe)
 
-        # 파일업로드 버튼 클릭
-        xpath = '//*[@id="filechooserContainer"]'
-        driver.find_element(By.XPATH, xpath).click()
-        time.sleep(DELAY_TIME)
+            # 파일업로드 버튼 클릭
+            xpath = '//*[@id="filechooserContainer"]'
+            driver.find_element(By.XPATH, xpath).click()
+            time.sleep(DELAY_TIME)
 
-        # 업로드 파일 선택
-        upload_file(docuNo[1], app)
+            # 업로드 파일 선택
+            upload_file(docuNo[1], app)
 
-        # 저장버튼 클릭
-        xpath = '//*[@id="CommonBtnSave"]'
-        driver.find_element(By.XPATH, xpath).click()
-        
-        # 첨부파일 용량에 따라 대기시간 조정
-        tm = int(docuNo[4] / 3000000)
-        time.sleep(DELAY_TIME*2+tm)
-        
-        # iframe 밖으로 다시 나오기
-        driver.switch_to.default_content()
-                
-        end_time = time.time()
-        execution_time = end_time - start_time
-        app.log(f"수행시간 : {execution_time:.6f}초")
+            # 저장버튼 클릭
+            xpath = '//*[@id="CommonBtnSave"]'
+            driver.find_element(By.XPATH, xpath).click()
+            
+            # 첨부파일 용량에 따라 대기시간 조정
+            tm = int(docuNo[4] / 3000000)
+            time.sleep(DELAY_TIME*2+tm)
+            
+            # iframe 밖으로 다시 나오기
+            driver.switch_to.default_content()
+                    
+            end_time = time.time()
+            execution_time = end_time - start_time
+            app.log(f"수행시간 : {execution_time:.6f}초")
+        except:
+            app.log(f"Error!!!")
 
     time.sleep(DELAY_TIME)
 
